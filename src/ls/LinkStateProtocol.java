@@ -21,6 +21,9 @@ import peersim.config.FastConfig;
 import peersim.core.Linkable;
 import peersim.core.Network;
 import peersim.core.Node;
+import peersim.core.Protocol;
+import peersim.graph.Graph;
+import sun.awt.image.ImageWatched;
 
 /**
  * The class implements a network layer Link-State protocol.
@@ -77,11 +80,20 @@ public class LinkStateProtocol implements CDProtocol {
 			break;
 		case BCST:																		//broadcast the local graph
 			//get network size
-			//access node i
-			//access LS protocol in node i												
-				
-			//copy local graph
-			//send the copy to node i	
+			int size = Network.size();
+			for (int i = 0; i < size; i++) {
+				//access node i
+				Node tempNode = Network.get(i);
+
+				//access LS protocol in node i
+				LinkStateProtocol tempProtocol = (LinkStateProtocol) tempNode.getProtocol(pid);
+
+				//copy local graph
+				ArrayList<Edge> tempGraph = new ArrayList<>(graph);
+
+				//send the copy to node i
+				tempProtocol.recieve(tempGraph);
+			}
 																						//Transit to next phase
 			phase = CMPT;
 			break;
@@ -138,8 +150,20 @@ public class LinkStateProtocol implements CDProtocol {
 	 */
 	public void recieve(ArrayList<Edge> neighborGraph) {
 		//for each edge in the neighbour's graph
-		//ignore duplicate edges
-		//add new edge
+		for (Edge aNeighborGraph : neighborGraph) {
+			//ignore duplicate edges
+			boolean duplicate = false;
+			for (Edge aGraph : graph) {
+				if (aNeighborGraph == aGraph) {
+					duplicate = true;
+					break;
+				}
+			}
+			//add new edge
+			if (!duplicate) {
+				graph.add(aNeighborGraph);
+			}
+		}
 	}
 	
 	/**
