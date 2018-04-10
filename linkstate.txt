@@ -1,0 +1,35 @@
+# 5a
+random.seed 1234567880
+
+# 5b
+network.size 5
+
+# 5c
+simulation.cycles 10
+
+# 5d
+protocol.link IdleProtocol
+
+# 5e
+init.rnd WireKOut
+init.rnd.protocol link
+init.rnd.k 2
+init.rnd.undir
+
+# 5f
+init.ci CostInitialiser
+init.ci.linkable link
+
+protocol.lsp LinkStateProtocol
+protocol.lsp.linkable link
+
+control.lo LSObserver
+control.lo.protocol lsp
+
+control.gp ls.GraphPrinter
+control.gp.protocol lsp
+control.gp.outf graphs/
+control.gp.undir
+
+# 5e and 5f
+include.init rnd ci
