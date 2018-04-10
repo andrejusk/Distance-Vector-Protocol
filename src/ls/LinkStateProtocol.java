@@ -154,7 +154,7 @@ public class LinkStateProtocol implements CDProtocol {
 			//ignore duplicate edges
 			boolean duplicate = false;
 			for (Edge aGraph : graph) {
-				if (aNeighborGraph == aGraph) {
+				if (aNeighborGraph.equals(aGraph)) {
 					duplicate = true;
 					break;
 				}
@@ -165,7 +165,7 @@ public class LinkStateProtocol implements CDProtocol {
 			}
 		}
 	}
-	
+
 	/**
 	 * Access to local path tree. Used bye the observer.
 	 * @return the local path tree
