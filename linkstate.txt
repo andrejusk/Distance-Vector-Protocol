@@ -26,5 +26,10 @@ protocol.lsp.linkable link
 control.lo LSObserver
 control.lo.protocol lsp
 
+control.gp ls.GraphPrinter
+control.gp.protocol lsp
+control.gp.outf graphs/
+control.gp.undir
+
 # 5e and 5f
 include.init rnd ci
