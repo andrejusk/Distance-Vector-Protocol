@@ -69,16 +69,14 @@ public class DistanceVectorProtocol implements CDProtocol {
      */
     @Override
     public void nextCycle(Node host, int pid) {
-
         /* Reference local Linkable protocol */
         Linkable lnk = (Linkable) host.getProtocol(FastConfig.getLinkable(pid));
-
         /* Reference host's node ID */
         long nodeId = host.getID();
-
         /* Current phase */
         switch (phase) {
             case INITIALISE:
+                /* Initialise graph */
                 init(lnk, nodeId);
                 /* Transit to next phase */
                 phase = State.BROADCAST;
@@ -125,6 +123,7 @@ public class DistanceVectorProtocol implements CDProtocol {
     private void broadcast(int pid) {
         /* Get network size */
         int size = Network.size();
+        /* Broadcast to all nodes */
         for (int i = 0; i < size; i++) {
             /* Access node i */
             Node tempNode = Network.get(i);
@@ -146,33 +145,27 @@ public class DistanceVectorProtocol implements CDProtocol {
         if (done) {
             return;
         }
-
         /* Initialise graph */
         for (long i = 0; i < Network.size(); i++) {
             paths.put(i, new Path(i, i, Integer.MAX_VALUE));
         }
-
         /* Source node costs 0 */
         paths.get(nodeId).cost = 0;
-
         /* Relax edges repeatedly */
         for (int i = 0; i < (Network.size() - 1); i++) {
             /* For every edge */
             for (Edge edge : graph) {
                 /* Get indexes */
-                long src = edge.source;         // u
-                long dst = edge.destination;    // v
-
+                long src = edge.source;
+                long dst = edge.destination;
                 /* Skip unreached (can't add to infinity) */
                 if (paths.get(src).cost >= Integer.MAX_VALUE) {
                     continue;
                 }
-
                 /* Calculate costs */
-                int cost = edge.cost;          // w
-                int oldCost = paths.get(dst).cost;         // distance[v]
-                int newCost = paths.get(src).cost + cost;  // distance[u] + w
-
+                int cost = edge.cost;
+                int oldCost = paths.get(dst).cost;
+                int newCost = paths.get(src).cost + cost;
                 /* Update if cost has decreased */
                 if (newCost < oldCost) {
                     paths.get(dst).cost = newCost;
@@ -180,14 +173,12 @@ public class DistanceVectorProtocol implements CDProtocol {
                 }
             }
         }
-
         /* Check for negative-weight cycles */
         for (Edge edge : graph) {
             if (paths.get(edge.source).cost + edge.cost < paths.get(edge.destination).cost) {
                 System.out.println("Graph contains a negative-weight cycle");
             }
         }
-
         done = true;
     }
 
