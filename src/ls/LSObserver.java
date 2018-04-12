@@ -44,7 +44,7 @@ public class LSObserver implements Control{
 		for(int i=0; i < Network.size(); i++ ) {										//for each node in network
 			
 			Node node = Network.get(i);													//reference node i
-			LinkStateProtocol  protocol = (LinkStateProtocol) node.getProtocol(pid);	//get LS protocol	
+			DistanceVectorProtocol  protocol = (DistanceVectorProtocol) node.getProtocol(pid);	//get LS protocol
 			TreeMap<Long, Path> paths = protocol.getPaths();							//get path tree
 						
 			if(paths==null) continue;											

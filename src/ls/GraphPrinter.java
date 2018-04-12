@@ -69,8 +69,8 @@ public class GraphPrinter extends GraphObserver {
             	file.format("// M. Ayiad, %s \ngraph random { ratio=\"fill\"; margin=0; \n", date.toString());
 
             for (int i=0; i < n ; i++) {
-               
-            	LinkStateProtocol protocol = (LinkStateProtocol)Network.get(i).getProtocol(pid);
+
+                DistanceVectorProtocol protocol = (DistanceVectorProtocol)Network.get(i).getProtocol(pid);
             	Linkable link = (Linkable) Network.get(i).getProtocol(FastConfig.getLinkable(pid));
             	                                
                 for (int j = 0; j < link.degree(); j++) {
