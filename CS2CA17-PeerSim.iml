@@ -7,8 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="djep-1.0.0" level="project" />
-    <orderEntry type="library" name="jep-2.3.0" level="project" />
-    <orderEntry type="library" name="peersim-1.0.5" level="project" />
+    <orderEntry type="library" exported="" name="djep-1.0.0" level="project" />
+    <orderEntry type="library" exported="" name="jep-2.3.0" level="project" />
+    <orderEntry type="library" exported="" name="peersim-1.0.5" level="project" />
   </component>
 </module>
