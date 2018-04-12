@@ -18,6 +18,8 @@ import peersim.core.Network;
 import peersim.core.Node;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 /**
@@ -144,7 +146,65 @@ public class DistanceVectorProtocol implements CDProtocol {
         if (done) {
             return;
         }
-        System.out.println("TODO: implement " + nodeId);
+
+        /* Host node is source node */
+        paths.put(nodeId, new Path(nodeId, nodeId, 0));
+
+        Collections.sort(graph);
+        boolean updated;
+
+        do {
+            updated = false;
+
+            /* Copy current path tree */
+            TreeMap<Long, Path> temp = new TreeMap<>();
+            for (Path p : paths.values()) {
+                temp.put(p.destination, p.copy());
+            }
+
+            /* For each path */
+            for (Path path : temp.values()) {
+                Iterator<Edge> iterator = graph.iterator();
+                while (iterator.hasNext()) {
+                    Edge edge = iterator.next();
+
+                    /* New edge */
+                    if (path.destination == edge.source) {
+                        /* No path */
+                        if (!paths.containsKey(edge.destination)) {
+                            if (edge.source == nodeId) {
+                                paths.put(edge.destination,
+                                        new Path(edge.destination, edge.destination, edge.cost)
+                                );
+                            } else {
+                                paths.put(edge.destination,
+                                        new Path(edge.destination, path.predecessor, path.cost + edge.cost)
+                                );
+                            }
+                        }
+                        /* Update all paths */
+                        for (Path uPath : paths.values()) {
+                            int sourceToPath = uPath.cost;
+                            int sourceToNew = paths.get(edge.destination).cost;
+                            int pathToNew = CostInitialiser.getCost(uPath.destination, edge.destination);
+
+                            if (pathToNew < Integer.MAX_VALUE && (sourceToPath + pathToNew) < sourceToNew) {
+                                paths.get(edge.destination).cost = sourceToPath + pathToNew;
+                                paths.get(edge.destination).predecessor = uPath.predecessor;
+                            }
+                        }
+                    }
+
+                    /* Updated */
+                    updated = true;
+
+                    /* Remove visited edge */
+                    iterator.remove();
+                }
+            }
+
+        } while(updated);
+
         done = true;
     }
 
