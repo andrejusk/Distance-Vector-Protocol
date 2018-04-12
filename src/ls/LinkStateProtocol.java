@@ -99,31 +99,34 @@ public class LinkStateProtocol implements CDProtocol {
 
     private void init(Linkable lnk, long nodeId) {
         long neighborId;
-        // create information containers
+        /* Create information containers */
         this.graph = new ArrayList<>();
         this.paths = new TreeMap<>();
-        // add neighbours
-        for (int i = 0; i < lnk.degree(); i++) {                                        //access neighbours in the Linkable
-            neighborId = lnk.getNeighbor(i).getID();                                //get neighbour's i ID
-            int cost = CostInitialiser.getCost(nodeId, neighborId);                    //get cost of the link between this node and neighbour i
-            graph.add(new Edge(nodeId, neighborId, cost));                        //add edge to local graph
+        /* Add neighbours - access neighbours in the Linkable */
+        for (int i = 0; i < lnk.degree(); i++) {
+            /* Get neighbour's i ID */
+            neighborId = lnk.getNeighbor(i).getID();
+            /* Get cost of the link between this node and neighbour i */
+            int cost = CostInitialiser.getCost(nodeId, neighborId);
+            /* Add edge to local graph */
+            graph.add(new Edge(nodeId, neighborId, cost));
         }
     }
 
     private void broadcast(int pid) {
-        //get network size
+        /* Get network size */
         int size = Network.size();
         for (int i = 0; i < size; i++) {
-            //access node i
+            /* Access node i */
             Node tempNode = Network.get(i);
 
-            //access LS protocol in node i
+            /* Access LS protocol in node i */
             LinkStateProtocol tempProtocol = (LinkStateProtocol) tempNode.getProtocol(pid);
 
-            //copy local graph
+            /* Copy local graph */
             ArrayList<Edge> tempGraph = new ArrayList<>(graph);
 
-            //send the copy to node i
+            /* Send the copy to node i */
             tempProtocol.recieve(tempGraph);
         }
     }
@@ -177,9 +180,9 @@ public class LinkStateProtocol implements CDProtocol {
      * @param neighborGraph a copy of neighbour's local graph
      */
     private void recieve(ArrayList<Edge> neighborGraph) {
-        //for each edge in the neighbour's graph
+        /* For each edge in the neighbour's graph */
         for (Edge aNeighborGraph : neighborGraph) {
-            //ignore duplicate edges
+            /* Ignore duplicate edges */
             boolean duplicate = false;
             for (Edge aGraph : graph) {
                 if (aNeighborGraph.equals(aGraph)) {
@@ -187,7 +190,7 @@ public class LinkStateProtocol implements CDProtocol {
                     break;
                 }
             }
-            //add new edge
+            /* Add new edge */
             if (!duplicate) {
                 graph.add(aNeighborGraph);
             }
