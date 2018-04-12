@@ -147,63 +147,46 @@ public class DistanceVectorProtocol implements CDProtocol {
             return;
         }
 
-        /* Host node is source node */
-        paths.put(nodeId, new Path(nodeId, nodeId, 0));
+        /* Initialise graph */
+        for (long i = 0; i < Network.size(); i++) {
+            paths.put(i, new Path(i, i, Integer.MAX_VALUE));
+        }
 
-        Collections.sort(graph);
-        boolean updated;
+        /* Source node costs 0 */
+        paths.get(nodeId).cost = 0;
 
-        do {
-            updated = false;
+        /* Relax edges repeatedly */
+        for (int i = 0; i < (Network.size() - 1); i++) {
+            /* For every edge */
+            for (Edge edge : graph) {
+                /* Get indexes */
+                long src = edge.source;         // u
+                long dst = edge.destination;    // v
 
-            /* Copy current path tree */
-            TreeMap<Long, Path> temp = new TreeMap<>();
-            for (Path p : paths.values()) {
-                temp.put(p.destination, p.copy());
-            }
+                /* Skip unreached (can't add to infinity) */
+                if (paths.get(src).cost >= Integer.MAX_VALUE) {
+                    continue;
+                }
 
-            /* For each path */
-            for (Path path : temp.values()) {
-                Iterator<Edge> iterator = graph.iterator();
-                while (iterator.hasNext()) {
-                    Edge edge = iterator.next();
+                /* Calculate costs */
+                int cost = edge.cost;          // w
+                int oldCost = paths.get(dst).cost;         // distance[v]
+                int newCost = paths.get(src).cost + cost;  // distance[u] + w
 
-                    /* New edge */
-                    if (path.destination == edge.source) {
-                        /* No path */
-                        if (!paths.containsKey(edge.destination)) {
-                            if (edge.source == nodeId) {
-                                paths.put(edge.destination,
-                                        new Path(edge.destination, edge.destination, edge.cost)
-                                );
-                            } else {
-                                paths.put(edge.destination,
-                                        new Path(edge.destination, path.predecessor, path.cost + edge.cost)
-                                );
-                            }
-                        }
-                        /* Update all paths */
-                        for (Path uPath : paths.values()) {
-                            int sourceToPath = uPath.cost;
-                            int sourceToNew = paths.get(edge.destination).cost;
-                            int pathToNew = CostInitialiser.getCost(uPath.destination, edge.destination);
-
-                            if (pathToNew < Integer.MAX_VALUE && (sourceToPath + pathToNew) < sourceToNew) {
-                                paths.get(edge.destination).cost = sourceToPath + pathToNew;
-                                paths.get(edge.destination).predecessor = uPath.predecessor;
-                            }
-                        }
-                    }
-
-                    /* Updated */
-                    updated = true;
-
-                    /* Remove visited edge */
-                    iterator.remove();
+                /* Update if cost has decreased */
+                if (newCost < oldCost) {
+                    paths.get(dst).cost = newCost;
+                    paths.get(dst).predecessor = edge.source;
                 }
             }
+        }
 
-        } while(updated);
+        /* Check for negative-weight cycles */
+        for (Edge edge : graph) {
+            if (paths.get(edge.source).cost + edge.cost < paths.get(edge.destination).cost) {
+                System.out.println("Graph contains a negative-weight cycle");
+            }
+        }
 
         done = true;
     }
