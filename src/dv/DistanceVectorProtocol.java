@@ -9,7 +9,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  */
-package ls;
+package dv;
 
 import peersim.cdsim.CDProtocol;
 import peersim.config.FastConfig;
@@ -18,8 +18,6 @@ import peersim.core.Network;
 import peersim.core.Node;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.TreeMap;
 
 /**
@@ -127,7 +125,7 @@ public class DistanceVectorProtocol implements CDProtocol {
         for (int i = 0; i < size; i++) {
             /* Access node i */
             Node tempNode = Network.get(i);
-            /* Access LS protocol in node i */
+            /* Access DV protocol in node i */
             DistanceVectorProtocol tempProtocol = (DistanceVectorProtocol) tempNode.getProtocol(pid);
             /* Copy local graph */
             ArrayList<Edge> tempGraph = new ArrayList<>(graph);
@@ -169,7 +167,12 @@ public class DistanceVectorProtocol implements CDProtocol {
                 /* Update if cost has decreased */
                 if (newCost < oldCost) {
                     paths.get(dst).cost = newCost;
-                    paths.get(dst).predecessor = edge.source;
+                    /* If direct path */
+                    if (edge.source == nodeId) {
+                        paths.get(dst).predecessor = edge.destination;
+                    } else {
+                        paths.get(dst).predecessor = edge.source;
+                    }
                 }
             }
         }

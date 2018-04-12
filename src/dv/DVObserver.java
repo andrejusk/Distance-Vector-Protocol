@@ -9,7 +9,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  * See the GNU Lesser General Public License for more details.
  */
-package ls;
+package dv;
 
 import java.util.TreeMap;
 import peersim.config.Configuration;
@@ -18,21 +18,21 @@ import peersim.core.Network;
 import peersim.core.Node;
 
 /**
- * The class observes LinkStateProtoocl protocol and provide readable printout.
+ * The class observes DistanceVectorProtocol protocol and provide readable printout.
  * The observer prints to output screen the shortest path tree form each source node and in each cycle.
- * PREREQUISITE, must be used for LinkStateProtoocl protocol in PeerSim.
+ * PREREQUISITE, must be used for DistanceVectorProtocol protocol in PeerSim.
  * @author M. Ayiad
  * @version 1.0 
  * March 2018
  */
-public class LSObserver implements Control{
+public class DVObserver implements Control{
 
-	private final int pid;											//LinkStateProtoocl protocol ID
+	private final int pid;											//DistanceVectorProtocol protocol ID
 	/**
 	 * A constructor
 	 * @param prefix a string provided by PeerSim and used to access parameters from the configuration file.
 	 */
-	public LSObserver(String prefix) {
+	public DVObserver(String prefix) {
 		this.pid  = Configuration.getPid(prefix + ".protocol");
 	}
 	
@@ -44,7 +44,7 @@ public class LSObserver implements Control{
 		for(int i=0; i < Network.size(); i++ ) {										//for each node in network
 			
 			Node node = Network.get(i);													//reference node i
-			DistanceVectorProtocol  protocol = (DistanceVectorProtocol) node.getProtocol(pid);	//get LS protocol
+			DistanceVectorProtocol  protocol = (DistanceVectorProtocol) node.getProtocol(pid);	//get DV protocol
 			TreeMap<Long, Path> paths = protocol.getPaths();							//get path tree
 						
 			if(paths==null) continue;											

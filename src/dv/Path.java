@@ -9,7 +9,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  * See the GNU Lesser General Public License for more details.
  */
-package ls;
+package dv;
 
 /**
  * The class represent a shortest path from source node(host node) to destination

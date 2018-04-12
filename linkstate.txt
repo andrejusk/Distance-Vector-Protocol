@@ -28,11 +28,11 @@ protocol.dvp DistanceVectorProtocol
 protocol.dvp.linkable link
 
 # Observer
-control.lo LSObserver
-control.lo.protocol dvp
+control.do DVObserver
+control.do.protocol dvp
 
 # Graph Observer
-control.gp ls.GraphPrinter
+control.gp dv.GraphPrinter
 control.gp.protocol dvp
 control.gp.outf graphs/
 control.gp.undir
