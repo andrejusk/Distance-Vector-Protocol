@@ -62,8 +62,8 @@ public class DistanceVectorProtocol implements CDProtocol {
     /**
      * PeerSim cyclic service. To be execute every cycle.
      *
-     * @param host reference to host node (peersim.core.GeralNode)
-     * @param pid  global protocol's ID in this simulation
+     * @param host Reference to host node.
+     * @param pid Global protocol's ID in this simulation.
      */
     @Override
     public void nextCycle(Node host, int pid) {
@@ -88,15 +88,18 @@ public class DistanceVectorProtocol implements CDProtocol {
                 phase = State.COMPUTE;
                 break;
             case COMPUTE:
-                /* Do it only once */
-                if (!done) {
-                    /* Compute shortest path using Dijkstra algorithm */
-                    compute(nodeId);
-                }
+                /* Compute shortest paths */
+                compute(nodeId);
                 break;
         }
     }
 
+    /**
+     * Initialises local graph.
+     *
+     * @param lnk Reference local Linkable protocol.
+     * @param nodeId Host Node ID.
+     */
     private void init(Linkable lnk, long nodeId) {
         long neighborId;
         /* Create information containers */
@@ -113,25 +116,34 @@ public class DistanceVectorProtocol implements CDProtocol {
         }
     }
 
+    /**
+     * Broadcasts local graph to peers.
+     * @param pid Global protocol's ID in this simulation.
+     */
     private void broadcast(int pid) {
         /* Get network size */
         int size = Network.size();
         for (int i = 0; i < size; i++) {
             /* Access node i */
             Node tempNode = Network.get(i);
-
             /* Access LS protocol in node i */
             DistanceVectorProtocol tempProtocol = (DistanceVectorProtocol) tempNode.getProtocol(pid);
-
             /* Copy local graph */
             ArrayList<Edge> tempGraph = new ArrayList<>(graph);
-
             /* Send the copy to node i */
-            tempProtocol.recieve(tempGraph);
+            tempProtocol.receive(tempGraph);
         }
     }
 
+    /**
+     * Compute shortest path using Bellman-Ford algorithm.
+     * @param nodeId Host Node ID.
+     */
     private void compute(long nodeId) {
+        /* Do it only once */
+        if (done) {
+            return;
+        }
         System.out.println("TODO: implement " + nodeId);
         done = true;
     }
@@ -142,7 +154,7 @@ public class DistanceVectorProtocol implements CDProtocol {
      *
      * @param neighborGraph a copy of neighbour's local graph
      */
-    private void recieve(ArrayList<Edge> neighborGraph) {
+    private void receive(ArrayList<Edge> neighborGraph) {
         /* For each edge in the neighbour's graph */
         for (Edge aNeighborGraph : neighborGraph) {
             /* Ignore duplicate edges */
