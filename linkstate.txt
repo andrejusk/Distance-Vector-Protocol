@@ -1,35 +1,38 @@
-# 5a
+# Random seed
 random.seed 1234567880
 
-# 5b
+# Network size
 network.size 5
 
-# 5c
+# Simulation end time
 simulation.cycles 10
 
-# 5d
+# Linkable
 protocol.link IdleProtocol
 
-# 5e
+# Wiring the network
 init.rnd WireKOut
 init.rnd.protocol link
 init.rnd.k 2
 init.rnd.undir
 
-# 5f
+# Initialiser
 init.ci CostInitialiser
 init.ci.linkable link
 
+# Include Initialisers
+include.init rnd ci
+
+# Protocol
 protocol.dvp DistanceVectorProtocol
 protocol.dvp.linkable link
 
+# Observer
 control.lo LSObserver
 control.lo.protocol dvp
 
+# Graph Observer
 control.gp ls.GraphPrinter
 control.gp.protocol dvp
 control.gp.outf graphs/
 control.gp.undir
-
-# 5e and 5f
-include.init rnd ci
