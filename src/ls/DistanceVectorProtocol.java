@@ -18,20 +18,20 @@ import peersim.core.Network;
 import peersim.core.Node;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.TreeMap;
 
 /**
- * The class implements a network layer Link-State protocol.
- * The protocol broadcast its local graph to all nodes in the network.
- * Each instance of the protocol then computes the shortest path tree using Dijkstra algorithm.
+ * The class implements a network layer Distance-Vector protocol.
+ * It is based on the original Link-State protocol class.
  *
- * @author M. Ayiad
+ * The protocol broadcast its local graph to all nodes in the network.
+ * Each instance of the protocol then computes the shortest path tree using the Bellman-Ford algorithm.
+ *
+ * @author A. Kostarevas, M. Ayiad
  * @version 1.0
- * March 2018
+ * April 2018
  */
-public class LinkStateProtocol implements CDProtocol {
+public class DistanceVectorProtocol implements CDProtocol {
 
     /* Enumerated states */
     private enum State {
@@ -52,7 +52,7 @@ public class LinkStateProtocol implements CDProtocol {
      *
      * @param prefix required by PeerSim to access protocol's alias in the configuration file.
      */
-    public LinkStateProtocol(@SuppressWarnings("unused") String prefix) {
+    public DistanceVectorProtocol(@SuppressWarnings("unused") String prefix) {
         /* Start in INIT phase */
         this.phase = State.INITIALISE;
         /* Enable computation cycle */
@@ -121,7 +121,7 @@ public class LinkStateProtocol implements CDProtocol {
             Node tempNode = Network.get(i);
 
             /* Access LS protocol in node i */
-            LinkStateProtocol tempProtocol = (LinkStateProtocol) tempNode.getProtocol(pid);
+            DistanceVectorProtocol tempProtocol = (DistanceVectorProtocol) tempNode.getProtocol(pid);
 
             /* Copy local graph */
             ArrayList<Edge> tempGraph = new ArrayList<>(graph);
@@ -132,45 +132,8 @@ public class LinkStateProtocol implements CDProtocol {
     }
 
     private void compute(long nodeId) {
-        paths.put(nodeId, new Path(nodeId, nodeId, 0));                            //assume host node as source node
-        Collections.sort(graph);                                                //sort edges in ascending order by cost value
-        boolean updated = true;
-        while (updated) {                                                        //continue iteration until no more updates
-            updated = false;
-
-            TreeMap<Long, Path> temp = new TreeMap<>();                //copy current path tree
-            for (Path p : paths.values())
-                temp.put(p.destination, p.copy());
-
-            for (Path p : temp.values()) {                                        //for each path, find a new edges if any, compute shortest path
-                Iterator<Edge> itr = graph.iterator();
-                while (itr.hasNext()) {
-                    Edge e = itr.next();
-
-                    if (p.destination == e.source) {                                //a new edge
-                        if (!paths.containsKey(e.destination)) {                //no path to edge destination, add new path to destination
-                            if (e.source == nodeId)
-                                paths.put(e.destination, new Path(e.destination, e.destination, e.cost));
-                            else
-                                paths.put(e.destination, new Path(e.destination, p.predecessor, p.cost + e.cost));
-                        }
-                        for (Path x : paths.values()) {                            //update all current paths
-                            int src2_x_ = x.cost;
-                            int src2new = paths.get(e.destination).cost;
-                            int _x_2new = CostInitialiser.getCost(x.destination, e.destination);
-
-                            if (_x_2new < Integer.MAX_VALUE && (src2_x_ + _x_2new) < src2new) {
-                                paths.get(e.destination).cost = src2_x_ + _x_2new;
-                                paths.get(e.destination).predecessor = x.predecessor;
-                            }
-                        }
-                        updated = true;
-                        itr.remove();                                            //remove visited edge
-                    }//if
-                }//while
-            }//for
-        }//while
-        done = true;                                                            //the job done, don't run next cycle.
+        System.out.println("TODO: implement " + nodeId);
+        done = true;
     }
 
     /**

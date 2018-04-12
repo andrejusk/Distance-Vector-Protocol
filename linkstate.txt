@@ -20,14 +20,14 @@ init.rnd.undir
 init.ci CostInitialiser
 init.ci.linkable link
 
-protocol.lsp LinkStateProtocol
-protocol.lsp.linkable link
+protocol.dvp DistanceVectorProtocol
+protocol.dvp.linkable link
 
 control.lo LSObserver
-control.lo.protocol lsp
+control.lo.protocol dvp
 
 control.gp ls.GraphPrinter
-control.gp.protocol lsp
+control.gp.protocol dvp
 control.gp.outf graphs/
 control.gp.undir
 
