@@ -9,7 +9,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  * See the GNU Lesser General Public License for more details.
  */
-package ls;
+package dv;
 
 import java.io.File;
 import java.util.Date;
@@ -23,9 +23,9 @@ import peersim.core.Network;
 import peersim.reports.GraphObserver;
 
 /**
- * The control class extends the functionality of peersim.reports.GraphObserver to LinkStateProtoocl protocol.
+ * The control class extends the functionality of peersim.reports.GraphObserver to DistanceVectorProtocol protocol.
  * The class prints nodes and edge costs into out file using DOT language.
- * PREREQUISITE, must be used for LinkStateProtoocl protocol in PeerSim.
+ * PREREQUISITE, must be used for DistanceVectorProtocol protocol in PeerSim.
  * @author M. Ayiad
  * @version 1.0 
  * March 2018
@@ -69,8 +69,8 @@ public class GraphPrinter extends GraphObserver {
             	file.format("// M. Ayiad, %s \ngraph random { ratio=\"fill\"; margin=0; \n", date.toString());
 
             for (int i=0; i < n ; i++) {
-               
-            	LinkStateProtocol protocol = (LinkStateProtocol)Network.get(i).getProtocol(pid);
+
+                DistanceVectorProtocol protocol = (DistanceVectorProtocol)Network.get(i).getProtocol(pid);
             	Linkable link = (Linkable) Network.get(i).getProtocol(FastConfig.getLinkable(pid));
             	                                
                 for (int j = 0; j < link.degree(); j++) {
