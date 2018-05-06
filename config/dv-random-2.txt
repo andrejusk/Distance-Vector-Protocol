@@ -1,0 +1,38 @@
+# Random seed
+random.seed 123
+
+# Network size
+network.size 5
+
+# Simulation end time
+simulation.cycles 10
+
+# Linkable
+protocol.link IdleProtocol
+
+# Wiring the network
+init.rnd WireKOut
+init.rnd.protocol link
+init.rnd.k 2
+init.rnd.undir
+
+# Initialiser
+init.ci CostInitialiser
+init.ci.linkable link
+
+# Include Initialisers
+include.init rnd ci
+
+# Protocol
+protocol.dvp DistanceVectorProtocol
+protocol.dvp.linkable link
+
+# Observer
+control.do DVObserver
+control.do.protocol dvp
+
+# Graph Observer
+control.gp dv.GraphPrinter
+control.gp.protocol dvp
+control.gp.outf graphs/
+control.gp.undir
